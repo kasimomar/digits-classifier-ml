@@ -80,3 +80,16 @@ def train(output_dir, seed=42):
     joblib.dump(model, output / "model.joblib")
     (output / "example.json").write_text(json.dumps(x_test[:1].tolist()) + "\n")
     return report, model, matrix
+
+
+def save_confusion_plot(matrix, path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from sklearn.metrics import ConfusionMatrixDisplay
+    fig, ax = plt.subplots(figsize=(7, 6))
+    ConfusionMatrixDisplay(matrix, display_labels=np.arange(10)).plot(ax=ax, colorbar=False, cmap="Blues")
+    ax.set_title("Held-out digits: selected model\nRows = actual, columns = predicted")
+    fig.tight_layout()
+    fig.savefig(path, dpi=160)
+    plt.close(fig)
